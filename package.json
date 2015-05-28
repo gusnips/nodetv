@@ -1,0 +1,30 @@
+{
+  "name": "nodetv",
+  "version": "0.0.1",
+  "description": "Node TV",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/gusnips/nodetv.git"
+  },
+  "keywords": [
+    "nodetv",
+    "tv",
+    "p2p"
+  ],
+  "author": "Gustavo Salomé <gustavonips@gmail.com> (https://github.com/gusnips)",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/gusnips/nodetv/issues"
+  },
+  "homepage": "https://github.com/gusnips/nodetv",
+  "dependencies": {
+    "koa": "^0.21.0",
+    "koa-ejs": "^2.0.1",
+    "koa-error-ejs": "0.0.2",
+    "koa-router": "^5.0.1"
+  }
+}
