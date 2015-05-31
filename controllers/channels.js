@@ -1,5 +1,7 @@
 
 module.exports=function *(next){
     console.log('channels',this.params);
-    yield this.render('index');
+    yield this.render('channels');
+    if(next)
+        yield next;
 }
