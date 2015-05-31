@@ -1,13 +1,13 @@
 
 <div id="player-wrapper"></div>
-<script src="http://cdn.clappr.io/j/vendor/underscore-min.js"></script>
 <script src="http://cdn.clappr.io/0.0.62/clappr.min.js"></script>
 <script src="http://cdn.clappr.io/bemtv/latest/p2phlsstats.min.js"></script>
 <script src="http://cdn.clappr.io/bemtv/latest/p2phls.min.js"></script>
 <script>
+$(function(){
     var playerElement = document.getElementById("player-wrapper");
     player = new Clappr.Player({
-        sources: ['http://cdn.bem.tv/stream/soccer5/playlist.m3u8'],
+        sources: <%-sources%>,
         plugins: {
             playback: [P2PHLS],
             container: [P2PHLSStats]
@@ -19,4 +19,5 @@
 
     player.attachTo(playerElement);
     p.core.containers[0].getPlugin('p2phlsstats').show()
+});
 </script>

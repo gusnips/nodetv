@@ -3,7 +3,7 @@ var path=require('path')
 var extname=path.extname
 
 module.exports=function * streamFile(){
-    var fullpath=path.join(__dirname, '..', this.path)
+    var fullpath=path.join(__dirname, '../web', this.path)
     var fstat=yield stat(fullpath)
 
     if(fstat.isFile()){

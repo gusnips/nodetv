@@ -4,29 +4,26 @@ var fs=require('fs')
 
 if(!config.dbname)
     throw new Error('Database dbname not defined')
-try{
-    server.create({
-        name: config.dbname,
-        type: 'graph',
-        storage: 'plocal'
-    }).then(function(e){
-        console.log('Created the database "'+config.dbname+'"')
-        afterDbCreated()
-    }).error(function(e){
-        console.log('Database "'+config.dbname+'" exists')
-        afterDbCreated();
-    });
-}catch(e){
 
-}
+server.create({
+    name: config.dbname,
+    type: 'graph',
+    storage: 'plocal'
+}).then(function(db){
+    console.log('Created the database "'+config.dbname+'"')
+    afterDbCreated(db)
+}).error(function(e){
+    console.log('Database "'+config.dbname+'" exists')
+    var db=server.use(config.dbname);
+    afterDbCreated(db);
+});
 
-function afterDbCreated(){
-    createOptionsFile()
-    createClasses()
+function afterDbCreated(db){
+    createOptionsFile(db)
+    createClasses(db)
 }
 
 function createClasses(db){
-    var db=server.use(config.dbname);
     _createDbClass(db, 'User', 'V', {
         'username':'String',
         'email':'String'
@@ -36,6 +33,7 @@ function createClasses(db){
     _createDbClass(db, 'Video', 'V', {
         'name': 'String',
         'location':'String',
+        'status': 'Boolean',
     },{
         'location':'unique'
     })
@@ -61,6 +59,15 @@ function _afterClassCreated(Class, properties, indexes){
         _createClassProperties(Class, properties)
     if(indexes)
         _createClassIndexes(Class, indexes)
+    Class.db.delete('VERTEX').all().then(function(count){
+        console.log('deleted '+count+' videos');
+        Class.db.insert().into('Video').set({
+            location: 'http://cdn.bem.tv/stream/soccer5/playlist.m3u8',
+            status: true,
+        }).one().then(function (video) {
+          console.log('Video created', video);
+        });
+    });
 }
 /**
  * properties format 'propertyName':'Type',

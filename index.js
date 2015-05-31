@@ -4,7 +4,7 @@ var app=koa()
 
 require('koa-ejs')(app, {
   root: path.join(__dirname, 'views'),
-  layout: 'layouts/index'
+  layout: '/layouts/index',
 });
 app.use(require('koa-error-ejs')())
 
