@@ -4,104 +4,72 @@ var fs=require('fs')
 
 if(!config.dbname)
     throw new Error('Database dbname not defined')
-
-server.create({
-    name: config.dbname,
-    type: 'graph',
-    storage: 'plocal'
-}).then(function(db){
-    console.log('Created the database "'+config.dbname+'"')
-    afterDbCreated(db)
-}).error(function(e){
-    console.log('Database "'+config.dbname+'" exists')
-    var db=server.use(config.dbname);
-    afterDbCreated(db);
+/**
+ * properties format 'propertyName':'Type',
+ * indexes format 'property':'Type',
+ */
+var _createDbClass = async(function*(db, className, extendsName, properties, indexes){
+    var fullName=(extendsName ? className+'.'+extendsName : className);
+    var deleted=yield db.class.drop(className)
+    if(deleted)
+        console.log('Class "'+fullName+'" deleted')
+    var Class=yield db.class.create(className, extendsName).error(function(e){
+        throw e
+    })
+    console.log('Class "'+fullName+'" created')
+    if(properties){
+        for(var x in properties){
+            yield Class.property.create({
+                name: x,
+                type: properties[x]
+            }).error(function(e){
+                console.log('Property "'+Class.name+'.'+x+'" exists.')
+            })
+            console.log('Property "'+Class.name+'.'+x+'" created.')
+        }
+    }
+    if(indexes){
+        for(var x in indexes){
+            yield Class.db.index.create({
+                name: Class.name+'.'+x,
+                type: indexes[x]
+            }).error(function(e){
+                console.log('Index "'+Class.name+'.'+x+'" exists')
+            })
+            console.log('Index "'+Class.name+'.'+x+'" created')
+        }
+    }
 });
+var run = async(function* (){
+    var db=yield server.create({
+        name: config.dbname,
+        type: 'graph',
+        storage: 'plocal'
+    }).error(function(e){
+        console.log('Database "'+config.dbname+'" exists')
+    });
+    if(db)
+        console.log('Created the database "'+config.dbname+'"')
+    else
+        db=server.use(config.dbname)
 
-function afterDbCreated(db){
-    createOptionsFile(db)
-    createClasses(db)
-}
-
-function createClasses(db){
     _createDbClass(db, 'User', 'V', {
         'username':'String',
-        'email':'String'
+        'email':'String',
+        'created': 'Datetime'
     },{
         'email':'unique'
     })
     _createDbClass(db, 'Video', 'V', {
         'name': 'String',
-        'location':'String',
+        'key':'String',
         'status': 'Boolean',
+        'created': 'Datetime'
     },{
-        'location':'unique'
+        'key':'unique'
     })
-}
-
-function _createDbClass(db, className, extendsName, properties, indexes){
-    var fullName=(extendsName ? className+'.'+extendsName : className);
-    db.class.create(className, extendsName).then(function(Class){
-        console.log('Db class "'+fullName+'" created')
-        _afterClassCreated(Class, properties, indexes)
-    }).error(function(e){
-        db.class.get(className).then(function(Class){
-            console.log('Db class "'+fullName+'" exists')
-            _afterClassCreated(Class, properties, indexes)
-        }).error(function(e){
-            throw e
-        })
-    })
-}
-
-function _afterClassCreated(Class, properties, indexes){
-    if(properties)
-        _createClassProperties(Class, properties)
-    if(indexes)
-        _createClassIndexes(Class, indexes)
-    Class.db.delete('VERTEX').all().then(function(count){
-        console.log('deleted '+count+' videos');
-        Class.db.insert().into('Video').set({
-            location: 'http://cdn.bem.tv/stream/soccer5/playlist.m3u8',
-            status: true,
-        }).one().then(function (video) {
-          console.log('Video created', video);
-        });
-    });
-}
-/**
- * properties format 'propertyName':'Type',
- */
-function _createClassProperties(Class, properties){
-    for(var x in properties){
-        Class.property.create({
-            name: x,
-            type: properties[x]
-        }).then(function(){
-            console.log('Property "'+Class.name+'.'+x+'" created.')
-        }).error(function(e){
-            console.log('Property "'+Class.name+'.'+x+'" exists.')
-        })
-    }
-}
-/**
- * indexes format 'property':'Type',
- */
-function _createClassIndexes(Class, indexes){
-    for(var x in indexes){
-        var indexName=x
-        if(!x.indexOf('.'))
-            indexName=Class.name+'.'+x
-        Class.db.index.create({
-            name: indexName,
-            type: indexes[x]
-        }).then(function(index){
-            console.log('Index "'+indexName+'" created')
-        }).error(function(e){
-            console.log('Index "'+indexName+'" exists')
-        })
-    }
-}
+    createOptionsFile(db)
+})();
 
 function createOptionsFile(){
     var location=__dirname+'/../oriento.opts';
@@ -118,4 +86,31 @@ function createOptionsFile(){
             throw err
         console.log('Created an options file for oriento "'+location+'"')
     })
+}
+/***********************************************************
+ * From here down,                                         *
+ * boilerplate  async() function from article linked above *
+ ***********************************************************/
+
+function async(makeGenerator){
+  return function () {
+    var generator = makeGenerator.apply(this, arguments);
+
+    function handle(result){
+      // result => { done: [Boolean], value: [Object] }
+      if (result.done) return Promise.resolve(result.value);
+
+      return Promise.resolve(result.value).then(function (res){
+        return handle(generator.next(res));
+      }, function (err){
+        return handle(generator.throw(err));
+      });
+    }
+
+    try {
+      return handle(generator.next());
+    } catch (ex) {
+      return Promise.reject(ex);
+    }
+  }
 }

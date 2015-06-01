@@ -1,23 +1,71 @@
-
-<div id="player-wrapper"></div>
-<script src="http://cdn.clappr.io/0.0.62/clappr.min.js"></script>
-<script src="http://cdn.clappr.io/bemtv/latest/p2phlsstats.min.js"></script>
-<script src="http://cdn.clappr.io/bemtv/latest/p2phls.min.js"></script>
+<div class="container">
+    <div id="message-wrapper" class="row">
+        <div id="message"></div>
+    </div>
+    <div id="file-wrapper" class="row">
+        <input type="file" accept="video/*" id="file" />
+    </div>
+    <div id="player-wrapper" class="row">
+        <video controls autoplay id="player"></video>
+    </div>
+</div>
+<script src="https://skyway.io/dist/0.3/peer.js"></script>
 <script>
-$(function(){
-    var playerElement = document.getElementById("player-wrapper");
-    player = new Clappr.Player({
-        sources: <%-sources%>,
-        plugins: {
-            playback: [P2PHLS],
-            container: [P2PHLSStats]
-        },
-        width: 640, height: 360,
-        poster: "http://www.bem.tv/assets/poster.png",
-        watermark: "http://bem.tv/assets/watermark3.png",
-    });
+(function localFileVideoPlayerInit(win) {
+    var URL = win.URL || win.webkitURL,
+        displayMessage = (function displayMessageInit() {
+            var node = document.getElementById('message');
 
-    player.attachTo(playerElement);
-    p.core.containers[0].getPlugin('p2phlsstats').show()
-});
+            return function displayMessage(message, isError) {
+                node.innerHTML = message;
+                node.className = isError ? 'alert alert-danger' : 'alert alert-info';
+            };
+        }()),
+        playSelectedFile = function playSelectedFileInit(event) {
+            var file = this.files[0];
+
+            var type = file.type;
+
+            var videoNode = document.getElementById('player');
+
+            var canPlay = videoNode.canPlayType(type);
+
+            canPlay = (canPlay === '' ? 'no' : canPlay);
+
+            var message = 'Can play type "' + type + '": ' + canPlay;
+
+            var isError = canPlay === 'no';
+
+            displayMessage(message, isError);
+
+            if (isError) {
+                return;
+            } else {
+                displayMessage('Loading video');
+            }
+
+            var fileURL = URL.createObjectURL(file);
+
+            videoNode.src = fileURL;
+        },
+        inputNode = document.getElementById('file');
+
+    if (!URL) {
+        displayMessage('Your browser is not ' +
+           '<a href="http://caniuse.com/bloburls">supported</a>!', true);
+
+        return;
+    }
+
+    inputNode.addEventListener('change', playSelectedFile, false);
+}(window));
 </script>
+<style>
+#player, #file {
+    display: block;
+}
+
+#file {
+    width: 100%;
+}
+</style>

@@ -2,7 +2,7 @@
   "name": "nodetv",
   "version": "0.0.1",
   "description": "Node TV",
-  "main": "index.js",
+  "main": "app.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -13,7 +13,9 @@
   "keywords": [
     "nodetv",
     "tv",
-    "p2p"
+    "p2p",
+    "webrtc",
+    "peerjs"
   ],
   "author": "Gustavo Salomé <gustavonips@gmail.com> (https://github.com/gusnips)",
   "license": "ISC",
