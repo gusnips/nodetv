@@ -14,4 +14,14 @@ $(function(){
             }
         };
     }());
+    window.URL = window.URL || window.webkitURL;
+    navigator.getUserMedia = navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia;
+    if(!URL)
+        return displayMessage('Your browser is not <a href="http://caniuse.com/bloburls">supported</a>!', 'danger')
+    if(!navigator.getUserMedia)
+        return displayMessage('Your browser is not <a href="http://caniuse.com/getUserMedia">supported</a>!', 'danger')
+    if(!window.File || !window.FileReader)
+        return displayMessage('Your browser is not <a href="http://caniuse.com/file">supported</a>', 'danger');
+    if(!window.Blob)
+        return displayMessage('Your browser is not <a href="http://caniuse.com/blobbuilder">supported</a>', 'danger');
 });

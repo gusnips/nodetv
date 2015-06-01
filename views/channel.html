@@ -5,10 +5,8 @@
 </div>
 <script>
 jQuery(function(){
-    var URL = window.URL || window.webkitURL,
-        player=document.getElementById('player'),
+    var player=document.getElementById('player'),
         receivedData=[]
-    navigator.getUserMedia = navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia;
     if (!URL)
         return displayMessage('Your browser is not <a href="http://caniuse.com/bloburls">supported</a>!', 'danger')
 

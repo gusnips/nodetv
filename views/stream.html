@@ -8,8 +8,7 @@
 </div>
 <script>
 jQuery(function(){
-    var URL = window.URL || window.webkitURL,
-        player = document.getElementById('player'),
+    var player = document.getElementById('player'),
         playSelectedFile = function playSelectedFileInit(event) {
             var file = this.files[0]
             var type = file.type
@@ -30,13 +29,6 @@ jQuery(function(){
             });
         },
         inputNode = document.getElementById('file')
-
-    navigator.getUserMedia = navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia;
-
-    if(!URL)
-        return displayMessage('Your browser is not <a href="http://caniuse.com/bloburls">supported</a>!', 'danger')
-    if(!navigator.getUserMedia)
-        return displayMessage('Your browser is not <a href="http://caniuse.com/getUserMedia">supported</a>!', 'danger')
 
     inputNode.addEventListener('change', playSelectedFile, false);
 });

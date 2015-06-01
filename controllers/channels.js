@@ -2,7 +2,7 @@ var db=require('../modules/db');
 module.exports=function *(next){
     console.log('videos',this.params, next);
     var controller=this;
-    var videos=yield db.select()
+    var channels=yield db.select()
         .from('User')
         .where({status: true})
         .limit(12)
