@@ -1,0 +1,43 @@
+<div class="container">
+    <div id="file-wrapper" class="row">
+        <input type="file" accept="video/*" id="file" />
+    </div>
+    <div id="player-wrapper" class="row">
+        <video controls autoplay id="player"></video>
+    </div>
+</div>
+<script>
+jQuery(function(){
+    var URL = window.URL || window.webkitURL,
+        player = document.getElementById('player'),
+        playSelectedFile = function playSelectedFileInit(event) {
+            var file = this.files[0]
+            var type = file.type
+            var canPlay = player.canPlayType(type)
+            canPlay = (canPlay === '' ? 'no' : canPlay);
+
+            var isError = canPlay === 'no'
+            if (isError)
+                return displayMessage('Cannot play type "' + type + '"', 'danger')
+
+            displayMessage('Loading video', 'info', 5000)
+            player.src = URL.createObjectURL(file)
+            var peer = new Peer('node-<%-user.username%>',<%-JSON.stringify(config)%>)
+            peer.on('connection', function(visitor) {
+                visitor.on('open', function(){
+                    visitor.send(file);
+                });
+            });
+        },
+        inputNode = document.getElementById('file')
+
+    navigator.getUserMedia = navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia;
+
+    if(!URL)
+        return displayMessage('Your browser is not <a href="http://caniuse.com/bloburls">supported</a>!', 'danger')
+    if(!navigator.getUserMedia)
+        return displayMessage('Your browser is not <a href="http://caniuse.com/getUserMedia">supported</a>!', 'danger')
+
+    inputNode.addEventListener('change', playSelectedFile, false);
+});
+</script>

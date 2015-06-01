@@ -1,0 +1,7 @@
+#player, #file {
+    display: block;
+}
+
+#file {
+    width: 100%;
+}
