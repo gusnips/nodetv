@@ -1,1 +1,31 @@
-<h2>Channel View</h2>
+<div class="container">
+    <div id="player-wrapper" class="row">
+        <video controls autoplay id="player"></video>
+    </div>
+</div>
+<script>
+jQuery(function(){
+    var URL = window.URL || window.webkitURL,
+        player=document.getElementById('player'),
+        receivedData=[]
+    navigator.getUserMedia = navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia;
+    if (!URL)
+        return displayMessage('Your browser is not <a href="http://caniuse.com/bloburls">supported</a>!', 'danger')
+
+    if(!navigator.getUserMedia)
+        return displayMessage('Your browser is not <a href="http://caniuse.com/getUserMedia">supported</a>!', 'danger')
+    var peer = new Peer('node-<%-user.username%>',<%-JSON.stringify(config)%>)
+    var channel = peer.connect('node-<%-channel.username%>');
+    peer.on('connection', function(visitor) {
+        visitor.on('open', function(){
+            visitor.send(receivedData);
+        });
+    });
+    channel.on('data', function(data){
+        var dataView = new Uint8Array(data);
+        var dataBlob = new Blob([dataView]);
+        player.src = URL.createObjectURL(dataBlob)
+        receivedData=dataBlob;
+    });
+});
+</script>

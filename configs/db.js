@@ -8,7 +8,7 @@ var config=module.exports={
 }
 try{
     var local=require('./db-local.js')
-    module.exports=extend({},config, local)
+    extend(config, local)
 }catch(e){
-    module.exports=config;
 }
+module.exports=config;

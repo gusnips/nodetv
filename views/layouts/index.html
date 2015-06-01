@@ -7,14 +7,15 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <link type="text/css" href="//netdna.bootstrapcdn.com/bootstrap/3.1.0/css/bootstrap.min.css" rel="stylesheet"/>
         <link type="text/css" href="//cdnjs.cloudflare.com/ajax/libs/font-awesome/3.2.1/css/font-awesome.css" rel="stylesheet"/>
+        <link type="text/css" href="/css/main.css" rel="stylesheet"/>
+        <script src="//code.jquery.com/jquery-2.1.1.min.js"></script>
+        <script src="//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.1.1/js/bootstrap.min.js"></script>
+        <script src="https://skyway.io/dist/0.3/peer.min.js"></script>
+        <script src="/js/main.js"></script>
         <!--[if lt IE 9]>
           <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7/html5shiv.js"></script>
           <script src="//cdnjs.cloudflare.com/ajax/libs/respond.js/1.4.2/respond.min.js"></script>
-          <script src="/js/jquery.min.js"></script>
         <![endif]-->
-        <script src="//code.jquery.com/jquery-2.1.1.min.js"></script>
-        <script src="//cdnjs.cloudflare.com/ajax/libs/underscore.js/1.8.3/underscore-min.js"></script>
-        <script src="//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.1.1/js/bootstrap.min.js"></script>
     </head>
     <body>
         <div id="page" class="container">
@@ -28,8 +29,8 @@
                     <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
                         <ul class="nav navbar-nav">
                             <li><a href="/channels">Channels</a></li>
-                            <li><a href="/videos">Videos</a></li>
-                            <li class="active"><a href="/video/12">Video <span class="sr-only">(current)</span></a></li>
+                            <li><a href="/stream">Start your stream</a></li>
+                            <li class="active"><a href="/channel/gusnips">Video <span class="sr-only">(current)</span></a></li>
                         </ul>
                         <ul class="nav navbar-nav navbar-right">
                             <li class="dropdown">
@@ -54,6 +55,9 @@
                     </div><!-- /.navbar-collapse -->
                 </div><!-- /.container-fluid -->
             </nav>
+            <div id="message-wrapper" class="row">
+                <div id="message" style='display:none'></div>
+            </div>
             <div class="row">
                 <div class="col-lg-offset-2 col-md-offset-2 col-sm-offset-2 col-lg-8 col-md-8 col-sm-8" style="margin-top:100px">
                     <%- body %>

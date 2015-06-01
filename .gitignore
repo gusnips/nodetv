@@ -30,4 +30,4 @@ node_modules
 configs/*-local.js
 
 #local config for command line
-./oriento.opts
+oriento.opts

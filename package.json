@@ -24,6 +24,7 @@
   },
   "homepage": "https://github.com/gusnips/nodetv",
   "dependencies": {
+    "crypto-promise": "^1.0.2",
     "koa": "^0.21.0",
     "koa-ejs": "^2.0.1",
     "koa-error-ejs": "0.0.2",
