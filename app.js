@@ -1,11 +1,12 @@
 var koa=require('koa')
-var path=require('path')
+var session=require('koa-session')
+var config=require('./configs/general')
 var app=koa()
 
-require('koa-ejs')(app, {
-  root: path.join(__dirname, 'views'),
-  layout: '/layouts/index',
-});
+app.keys = config.sessionKeys;
+app.use(session(app));
+
+require('koa-ejs')(app, config.ejs);
 app.use(require('koa-error-ejs')())
 
 //routes first then file stream

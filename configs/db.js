@@ -1,11 +1,14 @@
+var extend=require('../modules/extend')
+var config=module.exports={
+  host: 'localhost',
+  port: 2424,
+  username: 'root',
+  password: 'root',
+  dbname: 'nodetv'
+}
 try{
-    module.exports=require('./db-local.js');
+    var local=require('./db-local.js')
+    module.exports=extend({},config, local)
 }catch(e){
-    module.exports={
-      host: 'localhost',
-      port: 2424,
-      username: 'root',
-      password: 'root',
-      dbname: 'nodetv'
-    }
+    module.exports=config;
 }

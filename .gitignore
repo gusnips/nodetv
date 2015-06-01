@@ -27,7 +27,7 @@ build/Release
 node_modules
 
 #local config
-configs/db-local.js
+configs/*-local.js
 
 #local config for command line
 ./oriento.opts
