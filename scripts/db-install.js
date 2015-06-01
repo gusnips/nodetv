@@ -1,5 +1,6 @@
 var server=require('../modules/db-server')
 var config=require('../configs/db')
+var async=require('../modules/async')
 var fs=require('fs')
 
 if(!config.dbname)
@@ -86,31 +87,4 @@ function createOptionsFile(){
             throw err
         console.log('Created an options file for oriento "'+location+'"')
     })
-}
-/***********************************************************
- * From here down,                                         *
- * boilerplate  async() function from article linked above *
- ***********************************************************/
-
-function async(makeGenerator){
-  return function () {
-    var generator = makeGenerator.apply(this, arguments);
-
-    function handle(result){
-      // result => { done: [Boolean], value: [Object] }
-      if (result.done) return Promise.resolve(result.value);
-
-      return Promise.resolve(result.value).then(function (res){
-        return handle(generator.next(res));
-      }, function (err){
-        return handle(generator.throw(err));
-      });
-    }
-
-    try {
-      return handle(generator.next());
-    } catch (ex) {
-      return Promise.reject(ex);
-    }
-  }
 }
