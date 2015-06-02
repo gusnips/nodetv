@@ -11,16 +11,17 @@ if(!config.dbname)
  */
 var _createDbClass = async(function*(db, className, extendsName, properties, indexes){
     try{
-        var fullName=(extendsName ? className+'.'+extendsName : className);
-        var deleted=yield db.delete('VERTEX',className).all()
-        if(deleted)
-            console.log(deleted, fullName,'records deleted')
-        var deleted=yield db.class.drop(className)
-        if(deleted)
-            console.log('Class',fullName,'deleted')
-        var Class=yield db.class.create(className, extendsName).error(function(e){
-            console.log(e)
-        })
+        var Class=yield db.class.get(className).error(function(){})
+        if(Class){
+            var fullName=(extendsName ? className+'.'+extendsName : className);
+            var deleted=yield db.delete('VERTEX',className).all()
+            if(deleted)
+                console.log(deleted, fullName,'records deleted')
+            var deleted=yield db.class.drop(className)
+            if(deleted)
+                console.log('Class',fullName,'deleted')
+        }
+        var Class=yield db.class.create(className, extendsName)
         if(!Class)
             console.log('Class',fullName, 'created')
         else
@@ -91,8 +92,8 @@ var run = async(function* (){
         },{
             'email':'unique'
         })
-        yield db.delete('VERTEX','Video').all()
-        yield db.class.drop('Video')
+        yield db.delete('VERTEX','Video').all().error(function(){})
+        yield db.class.drop('Video').error(function(){})
     }catch(e){
         console.log(e)
     }
